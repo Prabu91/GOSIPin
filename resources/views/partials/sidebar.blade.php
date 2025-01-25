@@ -15,7 +15,7 @@
 	</div>
 	<ul class="space-y-2 font-medium mt-12 mx-auto">
 		<li>
-			<a href="dashboard" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group">
+			<a href="{{ route('dashboard') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group">
 				
 				<svg class="flex-shrink-0 w-5 h-5 text-txtl transition duration-75 dark:text-txtd group-hover:text-gray-900 dark:group-hover:text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <polyline points="5 12 3 12 12 3 21 12 19 12" />  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
 				<span class="flex-1 ms-3 whitespace-nowrap">Dashboard</span>

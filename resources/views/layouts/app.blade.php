@@ -32,18 +32,49 @@
 	
 	<main class="flex flex-col md:flex-row min-h-screen overflow-hidden">
         @include('partials.sidebar')
-        <section class="w-full mx-auto p-6">
-            @yield('content') 
+        <section class="w-full mx-auto p-6 text-txtl">
+            <div class="p-4 sm:ml-64">
+                @yield('content') 
+            </div>
         </section>
     </main>
     
     @include('partials.footer')
+
+    {{-- SWAL --}}
+    @if (session('success'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    </script>
+    @endif
+
+    @if (session('error'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: '{{ session('error') }}',
+            showConfirmButton: true,
+            timer: 5000,
+            timerProgressBar: true,
+        });
+    </script>
+    @endif
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const successMessage = document.getElementById('successMessage');
             if (successMessage) {
@@ -52,7 +83,7 @@
                 }, 3000); 
             }
         });
-    </script>
+    </script> --}}
 
     
     @stack('scripts')

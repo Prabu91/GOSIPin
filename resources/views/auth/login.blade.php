@@ -22,7 +22,7 @@
 						</label>
 						<input type="text" id="npp" name="npp" placeholder="NPP"
 							class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring-blue-500 {{ $errors->has('npp') ? 'border-red-500' : '' }}">
-						{{-- <x-input-error :messages="$errors->get('npp')" class="mt-1 text-red-500 text-sm" /> --}}
+						<x-input-error :messages="$errors->get('npp')" class="mt-1 text-red-500 text-sm" />
 					</div>
 					<div>
 						<label for="val-password" class="block text-sm font-medium text-txtl">
@@ -30,7 +30,7 @@
 						</label>
 						<input type="password" id="val-password" name="password" placeholder="Masukan password"
 							class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring-blue-500 {{ $errors->has('password') ? 'border-red-500' : '' }}">
-						{{-- <x-input-error :messages="$errors->get('password')" class="mt-1 text-red-500 text-sm" /> --}}
+						<x-input-error :messages="$errors->get('password')" class="mt-1 text-red-500 text-sm" />
 					</div>
 					<div class="flex justify-center">
 						<button type="submit"

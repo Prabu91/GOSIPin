@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,24 +15,19 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'npp' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
         $credentials = $request->only('npp', 'password');
 
         $user = User::where('npp', $credentials['npp'])->first();
         if ($user && Hash::check($credentials['password'], $user->password)) {
             Auth::login($user);
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/dashboard')->with('success', 'Login Berhasil!');
         }
 
 
-        return back()->withErrors(['npp' => 'NPP atau password salah.'])->withInput();
+        return back()->withErrors(['npp' => 'NPP Salah!', 'password' => 'Password Salah!'])->withInput();
     }
 
     public function logout(Request $request)
@@ -39,6 +35,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/')->with('success', 'Logout Berhasil!');
     }
 }
