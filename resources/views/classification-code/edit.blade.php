@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Klasifikasi')
+@section('title', 'Edit Kode Klasifikasi')
 
 @section('content')
     
 <div class="container mx-auto max-w-lg p-8 bg-white shadow-md rounded-lg">
-	<h1 class="text-2xl font-bold mb-4 text-center text-txtl">Edit Data Klasifikasi</h1>
+	<h1 class="text-2xl font-bold mb-4 text-center text-txtl">Edit Data Kode Klasifikasi</h1>
     <form action="{{ route('classificationCode.update', $classificationCode->id) }}" id="classCodeForm" method="POST">
         @csrf
         @method('PUT')

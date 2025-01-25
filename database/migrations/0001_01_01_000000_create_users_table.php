@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('npp')->unique();
             $table->string('password');
-            $table->enum('role', ['UK', 'Pegawai']);
+            $table->enum('role', ['UK', 'UP']);
             $table->enum('department', ['PMU', 'YANFASKES', 'YANSER', 'KEPSER', 'PKP', 'SDMUK']);
             $table->rememberToken();
             $table->timestamps();

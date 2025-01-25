@@ -13,6 +13,7 @@ class Classification extends Model
     protected $fillable = [
         'user_id',
         'classification_code_id',
+        'bagian',
         'nomor_berkas',
         'nomor_item_berkas',
         'uraian_berkas',

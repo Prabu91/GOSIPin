@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreClassificationRequest;
+use App\Http\Requests\UpdateClassificationRequest;
 use App\Models\Classification;
 use App\Models\ClassificationCode;
 use App\Models\User;
@@ -40,9 +41,8 @@ class ClassificationController extends Controller
      */
     public function create()
     {
-        $users = User::all();
         $codes = ClassificationCode::all();
-        return view('classification.create', compact('users', 'codes'));
+        return view('classification.create', compact('codes'));
     }
 
     /**
@@ -53,8 +53,8 @@ class ClassificationController extends Controller
         try {
             DB::transaction(function () use ($request) {
                 $user = Auth::id();
+                $dept = User::where('id', $user)->first();
                 $jlmActive = ClassificationCode::where('id', $request->classification_code_id)->first();
-
                 $tahun_inactive = Carbon::parse($request->date)->year + $jlmActive->active;
                 $tahun_musnah = $tahun_inactive + $jlmActive->inactive;
 
@@ -63,6 +63,7 @@ class ClassificationController extends Controller
                 $clas = Classification::create([
                     'user_id' => $user,
                     'classification_code_id' => $request->classification_code_id,
+                    'bagian' => $dept->department,
                     'nomor_berkas' => $request->nomor_berkas,
                     'nomor_item_berkas' => $request->nomor_item_berkas,
                     'uraian_berkas' => $request->uraian_berkas,
@@ -87,52 +88,6 @@ class ClassificationController extends Controller
         
     }
 
-//     public function store(Request $request)
-// {
-//     // dd($jlmActive); // Jika ini tampil, berarti request masuk
-    
-//     // DB::beginTransaction();
-//     // try {
-//         $user = Auth::id();
-        
-//         $jlmActive = ClassificationCode::where('id', $request->classification_code_id)->first();
-//         if (!$jlmActive) {
-//             throw new \Exception('Kode klasifikasi tidak ditemukan.');
-//         }
-        
-//         $tahun_inactive = Carbon::parse($request->date)->year + $jlmActive->active;
-//         $tahun_musnah = $tahun_inactive + $jlmActive->inactive;
-//         $status = now()->year <= $tahun_musnah ? "Active" : "Inactive";
-
-//         $clas = Classification::create([
-//             'user_id' => $user,
-//             'classification_code_id' => $request->classification_code_id,
-//             'nomor_berkas' => $request->nomor_berkas,
-//             'nomor_item_berkas' => $request->nomor_item_berkas,
-//             'uraian_berkas' => $request->uraian_berkas,
-//             'date' => $request->date,
-//             'jumlah' => $request->jumlah,
-//             'satuan' => $request->satuan,
-//             'perkembangan' => $request->perkembangan,
-//             'lokasi' => $request->lokasi,
-//             'ket_lokasi' => $request->ket_lokasi,
-//             'tahun_inactive' => $tahun_inactive,
-//             'tahun_musnah' => $tahun_musnah,
-//             'status' => $status,
-//         ]);
-
-//         // DB::commit();
-
-//         // dd($clas); // Jika tidak tampil, berarti kode sebelum ini gagal
-//     } catch (\Exception $e) {
-//         DB::rollback();
-//         return back()->with('error', 'Gagal Menyimpan Data: ' . $e->getMessage());
-//     }
-    
-//     return redirect()->route('classification.index')->with('success', 'Data berhasil ditambahkan.');
-// }
-
-
     /**
      * Display the specified resource.
      */
@@ -144,18 +99,53 @@ class ClassificationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Classification $classification)
     {
-        //
+        $codes = ClassificationCode::all();
+        return view('classification.edit', compact('classification', 'codes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateClassificationRequest $request, $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($request, $id) {
+                $user = Auth::id();
+                $classification = Classification::findOrFail($id);
+                $jlmActive = ClassificationCode::where('id', $request->classification_code_id)->first();
+
+                $tahun_inactive = Carbon::parse($request->date)->year + $jlmActive->active;
+                $tahun_musnah = $tahun_inactive + $jlmActive->inactive;
+
+                $status = now()->year <= $tahun_musnah ? "Active" : "Inactive";
+
+                $classification->update([
+                    'user_id' => $user,
+                    'classification_code_id' => $request->classification_code_id,
+                    'nomor_berkas' => $request->nomor_berkas,
+                    'nomor_item_berkas' => $request->nomor_item_berkas,
+                    'uraian_berkas' => $request->uraian_berkas,
+                    'date' => $request->date,
+                    'jumlah' => $request->jumlah,
+                    'satuan' => $request->satuan,
+                    'perkembangan' => $request->perkembangan,
+                    'lokasi' => $request->lokasi,
+                    'ket_lokasi' => $request->ket_lokasi,
+                    'tahun_inactive' => $tahun_inactive,
+                    'tahun_musnah' => $tahun_musnah,
+                    'status' => $status,
+                ]);
+            });
+
+            return redirect()->route('classification.index')->with('success', 'Data berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->route('classification.index')
+                ->with('error', 'Gagal Memperbarui Data!');
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -12,13 +12,13 @@
                 <!-- Arsip Aktif -->
                 <div class="w-1/2 text-center pr-2 border-r">
                     <h3 class="text-sm font-semibold">Arsip Aktif</h3>
-                    <p class="text-lg font-bold text-green-600">{{ rand(10, 100) }}</p>
+                    <p class="text-lg font-bold text-green-600">{{ $data[$dept]['active'] }}</p>
                 </div>
 
                 <!-- Arsip Inaktif -->
                 <div class="w-1/2 text-center pl-2">
                     <h3 class="text-sm font-semibold">Arsip Inaktif</h3>
-                    <p class="text-lg font-bold text-red-600">{{ rand(5, 50) }}</p>
+                    <p class="text-lg font-bold text-red-600">{{ $data[$dept]['inactive'] }}</p>
                 </div>
             </div>
         </div>

@@ -7,78 +7,84 @@
 <div class="container mx-auto max-w-lg p-8 bg-white shadow-md rounded-lg">
 	<h1 class="text-2xl font-bold mb-4 text-txtl text-center">Tambah Data Klasifikasi</h1>
 
-	<form id="classificationForm" action="{{ route('classification.store') }}" method="POST">
+	<form id="classificationForm" action="{{ route('classification.update', $classification->id) }}" method="POST">
 		@csrf
+		@method('PUT')
+		
 		<div class="mb-4">
 			<label for="nomor_berkas" class="block">Nomor Berkas</label>
-			<input type="number" name="nomor_berkas" id="nomor_berkas" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('nomor_berkas') }}" >
+			<input type="number" name="nomor_berkas" id="nomor_berkas" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('nomor_berkas', $classification->nomor_berkas) }}">
 			<x-input-error :messages="$errors->get('nomor_berkas')" class="mt-2" />
 		</div>
-
+	
 		<div class="mb-4">
 			<label for="classification_code_id" class="block">Judul Berkas</label>
 			<select name="classification_code_id" id="classification_code_id" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
 				<option value="">Pilih Judul Berkas</option>
 				@foreach($codes as $code)
-					<option value="{{ $code->id }}">{{ $code->code }} - {{ $code->title }}</option>
+					<option value="{{ $code->id }}" {{ $classification->classification_code_id == $code->id ? 'selected' : '' }}>
+						{{ $code->code }} - {{ $code->title }}
+					</option>
 				@endforeach
 			</select>
 		</div>
 		
 		<div class="mb-4">
 			<label for="nomor_item_berkas" class="block">Nomor Item Berkas</label>
-			<input type="number" name="nomor_item_berkas" id="nomor_item_berkas" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('nomor_item_berkas') }}" >
+			<input type="number" name="nomor_item_berkas" id="nomor_item_berkas" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('nomor_item_berkas', $classification->nomor_item_berkas) }}">
 			<x-input-error :messages="$errors->get('nomor_item_berkas')" class="mt-2" />
 		</div>
-
+	
 		<div class="mb-4">
 			<label for="uraian_berkas" class="block">Uraian Berkas</label>
-			<input type="text" name="uraian_berkas" id="uraian_berkas" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('uraian_berkas') }}" >
+			<input type="text" name="uraian_berkas" id="uraian_berkas" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('uraian_berkas', $classification->uraian_berkas) }}">
 			<x-input-error :messages="$errors->get('uraian_berkas')" class="mt-2" />
 		</div>
-
+	
 		<div class="mb-4">
 			<label for="date" class="block">Tanggal</label>
-			<input type="date" name="date" id="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('date') }}" >
+			<input type="date" name="date" id="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('date', $classification->date) }}">
 			<x-input-error :messages="$errors->get('date')" class="mt-2" />
 		</div>
-
+	
 		<div class="mb-4">
 			<label for="jumlah" class="block">Jumlah</label>
-			<input type="number" name="jumlah" id="jumlah" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('jumlah') }}" >
+			<input type="number" name="jumlah" id="jumlah" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('jumlah', $classification->jumlah) }}">
 			<x-input-error :messages="$errors->get('jumlah')" class="mt-2" />
 		</div>
-
+	
 		<div class="mb-4">
 			<label for="satuan" class="block">Satuan</label>
-			<input type="text" name="satuan" id="satuan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('satuan') }}" >
+			<input type="text" name="satuan" id="satuan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('satuan', $classification->satuan) }}">
 			<x-input-error :messages="$errors->get('satuan')" class="mt-2" />
 		</div>
-
+	
 		<div class="mb-4">
 			<label for="perkembangan" class="block">Tingkat Perkembangan</label>
-			<input type="text" name="perkembangan" id="perkembangan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('perkembangan') }}" >
+			<input type="text" name="perkembangan" id="perkembangan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('perkembangan', $classification->perkembangan) }}">
 			<x-input-error :messages="$errors->get('perkembangan')" class="mt-2" />
 		</div>
-
+	
 		<div class="mb-4">
 			<label for="lokasi" class="block">Lokasi</label>
 			<select name="lokasi" id="lokasi" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
-				<option value="rak">Rak</option>
-				<option value="shelf">Shelf</option>
-				<option value="box">Box</option>
+				<option value="rak" {{ $classification->lokasi == 'rak' ? 'selected' : '' }}>Rak</option>
+				<option value="shelf" {{ $classification->lokasi == 'shelf' ? 'selected' : '' }}>Shelf</option>
+				<option value="box" {{ $classification->lokasi == 'box' ? 'selected' : '' }}>Box</option>
 			</select>
 		</div>
+		
 		<div class="mb-4">
 			<label for="ket_lokasi" class="block">Keterangan Lokasi</label>
-			<input type="text" name="ket_lokasi" id="ket_lokasi" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('ket_lokasi') }}" >
+			<input type="text" name="ket_lokasi" id="ket_lokasi" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('ket_lokasi', $classification->ket_lokasi) }}">
 			<x-input-error :messages="$errors->get('ket_lokasi')" class="mt-2" />
 		</div>
-
+	
 		<div class="flex justify-end items-center">
-            <button type="button" id="openModalButton" class="bg-btn hover:bg-btnh text-txtd px-4 py-2 rounded">Simpan</button>
-        </div>
+			<button type="button" id="openModalButton" class="bg-btn hover:bg-btnh text-txtd px-4 py-2 rounded">Update</button>
+		</div>
 	</form>
+	
 
 	<!-- Modal -->
     <div id="confirmationModal" class="fixed inset-0 z-50 hidden bg-gray-800 bg-opacity-75 flex items-center justify-center">
