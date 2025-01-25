@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreClassificationCodeRequest;
 use App\Models\ClassificationCode;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\ClassificationImport;
+use App\Imports\ClassificationCodeImport;
+use Illuminate\Support\Facades\DB;
 
 class ClassificationCodeController extends Controller
 {
@@ -14,7 +16,7 @@ class ClassificationCodeController extends Controller
      */
     public function index()
     {
-        $classificationCodes = ClassificationCode::paginate(100);
+        $classificationCodes = ClassificationCode::orderBy('code', 'asc')->paginate(100);
         return view('classification-code.index', compact('classificationCodes'));
     }
 
@@ -34,23 +36,23 @@ class ClassificationCodeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreClassificationCodeRequest $request)
     {
-        $request->validate([
-            'code' => 'required|string|max:255|unique:classification_codes,code',
-            'title' => 'required|string|max:255',
-            'active' => 'required|integer',
-            'ket_active' => 'required|string',
-            'inactive' => 'required|integer',
-            'ket_inactive' => 'required|string',
-            'keterangan' => 'required|string',
-            'security' => 'required|string',
-            'hak_akses' => 'required|string',
-        ]);
+        DB::transaction(function () use ($request) {
+            ClassificationCode::create([
+                'code' => $request->code,
+                'title' => $request->title,
+                'active' => $request->active,
+                'ket_active' => $request->ket_active,
+                'inactive' => $request->inactive,
+                'ket_inactive' => $request->ket_inactive,
+                'keterangan' => $request->keterangan,
+                'security' => $request->security,
+                'hak_akses' => $request->hak_akses,
+            ]);
+        });
 
-        ClassificationCode::create($request->all());
-
-        return redirect()->route('classificationCode.index')->with('success', 'Klasifikasi berhasil ditambahkan.');
+        return redirect()->route('classificationCode.index')->with('success', 'Kode Klasifikasi berhasil ditambahkan.');
     }
 
     /**
@@ -63,7 +65,7 @@ class ClassificationCodeController extends Controller
 
     public function edit(ClassificationCode $classificationCode)
     {
-        return view('classificationCode.edit', compact('classificationCode'));
+        return view('classification-code.edit', compact('classificationCode'));
     }
 
     public function update(Request $request, ClassificationCode $classificationCode)
@@ -72,43 +74,49 @@ class ClassificationCodeController extends Controller
             'code' => 'required|string|max:255|unique:classification_codes,code,' . $classificationCode->id,
             'title' => 'required|string|max:255',
             'active' => 'required|integer',
-            'ket_active' => 'required|string',
             'inactive' => 'required|integer',
-            'ket_inactive' => 'required|string',
             'keterangan' => 'required|string',
             'security' => 'required|string',
             'hak_akses' => 'required|string',
         ]);
 
-        $classificationCode->update($request->all());
+        DB::transaction(function () use ($request,$classificationCode) {
+            $classificationCode->update([
+                'code' => $request->code,
+                'title' => $request->title,
+                'active' => $request->active,
+                'ket_active' => $request->ket_active,
+                'inactive' => $request->inactive,
+                'ket_inactive' => $request->ket_inactive,
+                'keterangan' => $request->keterangan,
+                'security' => $request->security,
+                'hak_akses' => $request->hak_akses,
+            ]);
+        });
 
-        return redirect()->route('classificationCode.index')->with('success', 'Klasifikasi berhasil diperbarui.');
+        return redirect()->route('classificationCode.index')->with('success', 'Kode Klasifikasi berhasil diperbarui.');
     }
 
     public function destroy(ClassificationCode $classificationCode)
     {
         $classificationCode->delete();
-        return redirect()->route('classificationCode.index')->with('success', 'Klasifikasi berhasil dihapus.');
+        return redirect()->route('classificationCode.index')->with('success', 'Kode Klasifikasi berhasil dihapus.');
     }
 
     public function import(Request $request)
-{
-    $request->validate([
-        'import_klasifikasi' => 'required|mimes:xlsx,xls',
-    ]);
+    {
+        $request->validate([
+            'import_klasifikasi' => 'required|mimes:xlsx,xls',
+        ]);
 
-    try {
-        Excel::import(new ClassificationImport, $request->file('import_klasifikasi'));
-        return redirect()->route('classificationCode.index')->with('success', 'Data berhasil diimpor.');
-    } catch (\Exception $e) {
-        return redirect()->route('classificationCode.index')->with('error', 'Gagal mengimpor data: ' . $e->getMessage());
+        try {
+            $import = new ClassificationCodeImport();
+            Excel::import($import, request()->file('import_klasifikasi')); 
+            $import->import();
+            return redirect()->route('classificationCode.index')->with('success', 'Data berhasil diimpor.');
+        } catch (\Exception $e) {
+            return redirect()->route('classificationCode.index')->with('error', 'Gagal mengimpor data: ' . $e->getMessage());
+        }
     }
-}
 
-
-    // public function import(Request $request)
-    // {
-    //     Excel::import(new ClassificationImport, $request->file('import_klasifikasi'));
-    //     return redirect()->route('classificationCode.index')->with('success', 'Data berhasil diimpor.');
-    // }
 }

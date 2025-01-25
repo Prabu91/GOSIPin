@@ -1,71 +1,74 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Klasifikasi')
+@section('title', 'Edit Klasifikasi')
 
 @section('content')
     
 <div class="container mx-auto max-w-lg p-8 bg-white shadow-md rounded-lg">
-	<h1 class="text-2xl font-bold mb-4 text-center text-txtl">Tambah Data Klasifikasi</h1>
-    <form action="{{ route('classificationCode.store') }}" id="classCodeForm" method="POST">
+	<h1 class="text-2xl font-bold mb-4 text-center text-txtl">Edit Data Klasifikasi</h1>
+    <form action="{{ route('classificationCode.update', $classificationCode->id) }}" id="classCodeForm" method="POST">
         @csrf
+        @method('PUT')
+    
         <div class="mb-4">
             <label class="block">Kode</label>
-            <input type="text" name="code" class="w-full p-2 border rounded">
+            <input type="text" name="code" value="{{ old('code', $classificationCode->code) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('code')" class="mt-1 text-red-500 text-sm" />
         </div>
-
+    
         <div class="mb-4">
             <label class="block">Judul</label>
-            <input type="text" name="title" class="w-full p-2 border rounded">
+            <input type="text" name="title" value="{{ old('title', $classificationCode->title) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('title')" class="mt-1 text-red-500 text-sm" />
         </div>
-
+    
         <div class="mb-4">
             <label class="block">JRA Aktif (Tahun)</label>
-            <input type="number" name="active" class="w-full p-2 border rounded">
+            <input type="number" name="active" value="{{ old('active', $classificationCode->active) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('active')" class="mt-1 text-red-500 text-sm" />
         </div>
-
+    
         <div class="mb-4">
             <label class="block">Keterangan JRA Aktif</label>
-            <input type="text" name="ket_active" class="w-full p-2 border rounded">
+            <input type="text" name="ket_active" value="{{ old('ket_active', $classificationCode->ket_active) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('ket_active')" class="mt-1 text-red-500 text-sm" />
         </div>
-
-		<div class="mb-4">
-			<label class="block">JRA Inaktif (Tahun)</label>
-			<input type="number" name="inactive" class="w-full p-2 border rounded">
+    
+        <div class="mb-4">
+            <label class="block">JRA Inaktif (Tahun)</label>
+            <input type="number" name="inactive" value="{{ old('inactive', $classificationCode->inactive) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('inactive')" class="mt-1 text-red-500 text-sm" />
-		</div>
-
+        </div>
+    
         <div class="mb-4">
             <label class="block">Keterangan JRA Inaktif</label>
-            <input type="text" name="ket_inactive" class="w-full p-2 border rounded">
+            <input type="text" name="ket_inactive" value="{{ old('ket_inactive', $classificationCode->ket_inactive) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('ket_inactive')" class="mt-1 text-red-500 text-sm" />
         </div>
-
+    
         <div class="mb-4">
             <label class="block">Keterangan</label>
-            <input type="text" name="keterangan" class="w-full p-2 border rounded">
+            <input type="text" name="keterangan" value="{{ old('keterangan', $classificationCode->keterangan) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('keterangan')" class="mt-1 text-red-500 text-sm" />
         </div>
-
+    
         <div class="mb-4">
             <label class="block">Klasifikasi Keamanan</label>
-            <input type="text" name="security" class="w-full p-2 border rounded">
+            <input type="text" name="security" value="{{ old('security', $classificationCode->security) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('security')" class="mt-1 text-red-500 text-sm" />
         </div>
-
+    
         <div class="mb-4">
             <label class="block">Hak Akses (Pejabat yang Bertanggung Jawab)</label>
-            <input type="text" name="hak_akses" class="w-full p-2 border rounded">
+            <input type="text" name="hak_akses" value="{{ old('hak_akses', $classificationCode->hak_akses) }}" class="w-full p-2 border rounded">
             <x-input-error :messages="$errors->get('hak_akses')" class="mt-1 text-red-500 text-sm" />
         </div>
-
+    
         <div class="flex justify-end items-center">
-            <button type="button" id="openModalButton" class="bg-btn hover:bg-btnh text-txtd px-4 py-2 rounded">Simpan</button>
+            <button type="button" id="openModalButton" class="bg-btn hover:bg-btnh text-txtd px-4 py-2 rounded">Perbarui</button>
         </div>
     </form>
+    
 
     <!-- Modal -->
     <div id="confirmationModal" class="fixed inset-0 z-50 hidden bg-gray-800 bg-opacity-75 flex items-center justify-center">

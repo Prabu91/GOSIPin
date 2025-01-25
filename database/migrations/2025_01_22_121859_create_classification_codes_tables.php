@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('code');
             $table->string('title');
             $table->integer('active');
-            $table->string('ket_active');
+            $table->string('ket_active')->nullable();
             $table->integer('inactive');
-            $table->string('ket_inactive');
+            $table->string('ket_inactive')->nullable();
             $table->string('keterangan');
             $table->string('security');
             $table->string('hak_akses');
