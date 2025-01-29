@@ -31,7 +31,7 @@
             <label class="block">Role</label>
             <select name="role" class="w-full p-2 border rounded">
                 <option value="UK" {{ $user->role == 'UK' ? 'selected' : '' }}>UK</option>
-                <option value="Pegawai" {{ $user->role == 'Pegawai' ? 'selected' : '' }}>Pegawai</option>
+                <option value="UP" {{ $user->role == 'UP' ? 'selected' : '' }}>UP</option>
             </select>
         </div>
 

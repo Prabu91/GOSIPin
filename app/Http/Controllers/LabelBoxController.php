@@ -7,14 +7,39 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\LabelExport;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LabelBoxController extends Controller
 {
-    public function index() {
-        $classifications = Classification::with('classificationCode','user')->paginate(50);
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+        $query = Classification::query();
+
+        if ($user->role === 'UP') {
+            $query->where('bagian', $user->department); 
+        }
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                if (in_array(strtolower($search), ['aktif', 'inaktif'])) {
+                    $q->where('status', $search);
+                } else {
+                    $q->whereHas('classificationCode', function ($q) use ($search) {
+                        $q->where('code', 'like', "%$search%");
+                    })->orWhere('box_number', 'like', "%$search%");
+                }
+            });
+        }
+
+        $classifications = $query->orderBy('box_number', 'asc')->paginate(10);
 
         return view('label.index', compact('classifications'));
     }
+
 
     public function editRak($id) {
         $classification = Classification::findOrFail($id);
@@ -61,6 +86,11 @@ class LabelBoxController extends Controller
         $pdf = Pdf::loadView('label.export-label', compact('classification', 'year', 'bagian'));
 
         return $pdf->download('Box-'.$classification->box_number.'.pdf');
+    }
+
+    public function exportLabel(Request $request)
+    {
+        return Excel::download(new LabelExport, 'data_labels.xlsx');
     }
 
 }

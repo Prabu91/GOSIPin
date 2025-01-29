@@ -14,7 +14,7 @@
 		</a>
 	</div>
 	<div class="font-bold text-center text-txtd space-x-4">
-		<p>{{ auth()->user()->name }} - {{ auth()->user()->department }}</p>
+		<p>{{ auth()->user()->name }} - {{ auth()->user()->role }} - {{ auth()->user()->department }}</p>
 	</div>
 	<ul class="space-y-2 font-medium pt-4 mt-4 mx-auto border-t border-gray-200 dark:border-gray-700">
 		<li>
@@ -25,18 +25,20 @@
 				<span class="flex-1 ms-3 whitespace-nowrap">Dashboard</span>
 			</a>
 		</li>
-		<li>
-			<a href="{{ route('users.index') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group {{ Request::routeIs('users.index') || Request::routeIs('users.*') ? 'bg-gray-700  text-txtd' : '' }}">
-				<svg class="flex-shrink-0 w-5 h-5 text-txtl transition duration-75 dark:text-txtd group-hover:text-gray-900 dark:group-hover:text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path stroke="none" d="M0 0h24v24H0z"/>
-					<circle cx="9" cy="7" r="4" />
-					<path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-					<path d="M16 3.13a4 4 0 0 1 0 7.75" />
-					<path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-				</svg>
-				<span class="flex-1 ms-3 whitespace-nowrap">Users</span>
-			</a>
-		</li>
+		@if (auth()->user()->role == 'UK')	
+			<li>
+				<a href="{{ route('users.index') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group {{ Request::routeIs('users.index') || Request::routeIs('users.*') ? 'bg-gray-700  text-txtd' : '' }}">
+					<svg class="flex-shrink-0 w-5 h-5 text-txtl transition duration-75 dark:text-txtd group-hover:text-gray-900 dark:group-hover:text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+						<path stroke="none" d="M0 0h24v24H0z"/>
+						<circle cx="9" cy="7" r="4" />
+						<path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+						<path d="M16 3.13a4 4 0 0 1 0 7.75" />
+						<path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+					</svg>
+					<span class="flex-1 ms-3 whitespace-nowrap">Users</span>
+				</a>
+			</li>
+		@endif
 		<li>
 			<a href="{{ route('classificationCode.index') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group {{ Request::routeIs('classificationCode.index') || Request::routeIs('classificationCode.*') ? 'bg-gray-700  text-txtd' : '' }}">
 				<svg class="flex-shrink-0 w-5 h-5 text-txtl transition duration-75 dark:text-txtd group-hover:text-gray-900 dark:group-hover:text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -72,7 +74,7 @@
 			</a>
 		</li>
 		<li>
-			<a href="{{ route('labelBox.index') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group">
+			<a href="{{ route('labelBox.index') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group {{ Request::routeIs('labelBox.index')  || Request::routeIs('labelBox.*') ? 'bg-gray-700  text-txtd' : '' }}">
 				<svg class="flex-shrink-0 w-5 h-5 text-txtl transition duration-75 dark:text-txtd group-hover:text-gray-900 dark:group-hover:text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" />  <line x1="12" y1="12" x2="20" y2="7.5" />  <line x1="12" y1="12" x2="12" y2="21" />  <line x1="12" y1="12" x2="4" y2="7.5" />  <line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
 				<span class="flex-1 ms-3 whitespace-nowrap">Label Box</span>
 			</a>

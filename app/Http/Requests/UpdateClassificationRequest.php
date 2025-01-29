@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateClassificationRequest extends FormRequest
 {
@@ -31,7 +32,11 @@ class UpdateClassificationRequest extends FormRequest
             'satuan' => 'required|string|max:100',
             'perkembangan' => 'required|string|max:255',
             'lokasi' => 'required|in:rak,shelf,box',
-            'ket_lokasi' => 'required|string|max:255',
+            'box_number' => [
+                'required',
+                'string',
+                Rule::unique('classification_tables', 'box_number')->ignore($this->route('classification')),
+            ],
         ];
     }
 

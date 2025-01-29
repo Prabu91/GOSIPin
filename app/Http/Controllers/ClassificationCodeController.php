@@ -14,11 +14,21 @@ class ClassificationCodeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $classificationCodes = ClassificationCode::orderBy('code', 'asc')->paginate(100);
+        $query = ClassificationCode::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('code', 'like', "%{$search}%")
+                ->orWhere('title', 'like', "%{$search}%");
+        }
+
+        $classificationCodes = $query->orderBy('code', 'asc')->paginate(100);
+
         return view('classification-code.index', compact('classificationCodes'));
     }
+
 
     public function importView(Request $request)
     {

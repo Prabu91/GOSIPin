@@ -13,16 +13,28 @@ class DashboardController extends Controller
         $data = [];
         $departments = ['PMU', 'YANFASKES', 'YANSER', 'KEPSER', 'PKP', 'SDMUK'];
 
+        // Data untuk chart
+        $chartData = [
+            'labels' => $departments, // Label untuk chart (nama-nama bagian)
+            'active' => [], // Data untuk arsip aktif
+            'inactive' => [] // Data untuk arsip inaktif
+        ];
+
+
         foreach ($departments as $dept) {
-            $activeArsip = Classification::where('bagian', $dept)->where('status', 'active')->count();
-            $inactiveArsip = Classification::where('bagian', $dept)->where('status', 'inactive')->count();
+            $activeArsip = Classification::where('bagian', $dept)->where('status', 'aktif')->count();
+            $inactiveArsip = Classification::where('bagian', $dept)->where('status', 'inaktif')->count();
 
             $data[$dept] = [
-                'active' => $activeArsip,
-                'inactive' => $inactiveArsip,
+                'aktif' => $activeArsip,
+                'inaktif' => $inactiveArsip,
             ];
+
+            // Menambahkan data untuk chart
+            $chartData['active'][] = $activeArsip;
+            $chartData['inactive'][] = $inactiveArsip;
         }
 
-        return view('dashboard', compact('data'));
+        return view('dashboard', compact('data', 'chartData'));
     }
 }

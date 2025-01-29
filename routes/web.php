@@ -7,7 +7,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JraController;
 use App\Http\Controllers\LabelBoxController;
 use App\Http\Controllers\UserController;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,8 +22,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::middleware('check.role')->group(function () {
+        Route::resources([
+            'users' => UserController::class,
+        ]);
+        Route::get('classificationCode/create', [ClassificationCodeController::class, 'create'])->name('classificationCode.create');
+        Route::post('classificationCode', [ClassificationCodeController::class, 'store'])->name('classificationCode.store');
+        Route::get('classificationCode/{classificationCode}/edit', [ClassificationCodeController::class, 'edit'])->name('classificationCode.edit');
+        Route::put('classificationCode/{classificationCode}', [ClassificationCodeController::class, 'update'])->name('classificationCode.update');
+        Route::delete('classificationCode/{classificationCode}', [ClassificationCodeController::class, 'destroy'])->name('classificationCode.destroy');
+    });
+
     Route::resources([
-        'users' => UserController::class,
         'classificationCode' => ClassificationCodeController::class,
         'classification' => ClassificationController::class,
         'labelBox' => LabelBoxController::class,
@@ -36,11 +45,13 @@ Route::middleware('auth')->group(function () {
     Route::put('classificationBox/{id}', [ClassificationController::class, 'updateBox'])->name('classification.updateBox');
     Route::get('editRak/edit/{id}', [LabelBoxController::class, 'editRak'])->name('labelBox.editRak');
     Route::put('editRak/{id}', [LabelBoxController::class, 'updateRak'])->name('labelBox.updateRak');
+
+    Route::get('export-data', [LabelBoxController::class, 'exportLabel'])->name('labelBox.exportData');
+    Route::get('export-inaktif', [ClassificationController::class, 'exportInaktif'])->name('classification.exportInaktif');
     Route::get('export-label/{id}', [LabelBoxController::class, 'exportPdf'])->name('labelBox.export');
-
-
 
     Route::get('import', [ClassificationCodeController::class, 'importView'])->name('classificationCode.importV');
     Route::post('import', [ClassificationCodeController::class, 'import'])->name('classification.import');
+
 
 });

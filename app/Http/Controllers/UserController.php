@@ -69,7 +69,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'npp' => 'required|numeric|unique:users,npp,' . $user->id,
             'password' => 'nullable|min:6',
-            'role' => 'required|in:UK,Pegawai',
+            'role' => 'required|in:UK,UP',
             'department' => 'required|in:PMU,YANFASKES,YANSER,KEPSER,PKP,SDMUK',
         ]);
         

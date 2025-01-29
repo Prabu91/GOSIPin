@@ -75,9 +75,9 @@
 		</div>
 		
 		<div class="mb-4">
-			<label for="ket_lokasi" class="block">Keterangan Lokasi</label>
-			<input type="text" name="ket_lokasi" id="ket_lokasi" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('ket_lokasi', $classification->ket_lokasi) }}">
-			<x-input-error :messages="$errors->get('ket_lokasi')" class="mt-2" />
+			<label for="box_number" class="block">Nomor Box</label>
+			<input type="text" name="box_number" id="box_number" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('box_number', $classification->box_number) }}">
+			<x-input-error :messages="$errors->get('box_number')" class="mt-2" />
 		</div>
 	
 		<div class="flex justify-end items-center">

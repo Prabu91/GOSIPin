@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InaktifExport;
 use App\Http\Requests\StoreClassificationRequest;
 use App\Http\Requests\UpdateClassificationRequest;
 use App\Models\Classification;
@@ -11,43 +12,123 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClassificationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $classifications = Classification::with('classificationCode','user')->paginate(50);
+        $user = Auth::user();
+        $query = Classification::query();
+
+        if ($user->role === 'UP') {
+            $query->where('bagian', $user->department);
+        }
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                if (in_array(strtolower($search), ['aktif', 'inaktif'])) {
+                    $q->where('status', $search);
+                } else {
+                    $q->whereHas('classificationCode', function ($q) use ($search) {
+                        $q->where('code', 'like', "%$search%")
+                            ->orWhere('title', 'like', "%$search%");
+                    })->orWhere('box_number', 'like', "%$search%");
+                }
+            });
+        }
+
+        $classifications = $query->orderBy('box_number', 'asc')->paginate(10);
+
         return view('classification.index', compact('classifications'));
     }
 
-    public function indexActive()
+
+
+    public function indexActive(Request $request)
     {
-        $classifications = Classification::with('classificationCode','user')->where('status','aktif')->paginate(50);
+        $user = Auth::user();
+        $query = Classification::where('status', 'aktif');
+        if ($user->role === 'UP') {
+            $query->where('bagian', $user->department);
+        }
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('classificationCode', function ($q) use ($search) {
+                    $q->where('code', 'like', "%$search%")
+                        ->orWhere('title', 'like', "%$search%");
+                })
+                ->orWhere('box_number', 'like', "%{$search}%");
+            });
+        }
+
+        $classifications = $query->orderBy('box_number', 'asc')->paginate(50);
+
         return view('classification.indexActive', compact('classifications'));
     }
 
-    public function indexInactive()
-    {
-        $classifications = Classification::with('classificationCode','user')->where('status','inaktif')->paginate(50);
-        
-        // Hitung jumlah data berdasarkan klasifikasi_box
-        $classificationCounts = Classification::where('status', 'inaktif')
-        ->get()
-        ->groupBy('klasifikasi_box')
-        ->map(fn ($items) => $items->count());
 
-        // Hitung jumlah data berdasarkan status_box
+    public function indexInactive(Request $request)
+    {
+        $user = Auth::user();
+        $query = Classification::with('classificationCode', 'user')->where('status', 'inaktif');
+
+        if ($user->role === 'UP') {
+            $query->where('bagian', $user->department);
+        }
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('classificationCode', function ($q) use ($search) {
+                    $q->where('code', 'like', "%$search%")
+                        ->orWhere('title', 'like', "%$search%");
+                })
+                ->orWhere('box_number', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter berdasarkan klasifikasi_box
+        if ($request->has('klasifikasi_box')) {
+            $klasifikasiBox = $request->input('klasifikasi_box');
+            $query->where('klasifikasi_box', $klasifikasiBox);
+        }
+
+        // Filter berdasarkan status_box
+        if ($request->has('status_box')) {
+            $statusBox = $request->input('status_box');
+            $query->where('status_box', $statusBox);
+        }
+
+        // Ambil data berdasarkan query yang telah difilter
+        $classifications = $query->orderBy('box_number', 'asc')->paginate(50);
+
+        // Hitung jumlah data berdasarkan klasifikasi_box dengan filter 'bagian'
+        $classificationCounts = Classification::where('status', 'inaktif')
+            ->when($user->role === 'UP', function ($q) use ($user) {
+                return $q->where('bagian', $user->department); 
+            })
+            ->get()
+            ->groupBy('klasifikasi_box')
+            ->map(fn ($items) => $items->count());
+
+        // Hitung jumlah data berdasarkan status_box dengan filter 'bagian'
         $statusCounts = Classification::where('status', 'inaktif')
+            ->when($user->role === 'UP', function ($q) use ($user) {
+                return $q->where('bagian', $user->department); 
+            })
             ->get()
             ->groupBy('status_box')
             ->map(fn ($items) => $items->count());
 
         return view('classification.indexInactive', compact('classifications', 'classificationCounts', 'statusCounts'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -210,5 +291,10 @@ class ClassificationController extends Controller
     {
         $classification->delete();
         return redirect()->route('classification.index')->with('success', 'Data berhasil dihapus.');
+    }
+
+    public function exportInaktif(Request $request)
+    {
+        return Excel::download(new InaktifExport, 'data_inaktif.xlsx');
     }
 }
