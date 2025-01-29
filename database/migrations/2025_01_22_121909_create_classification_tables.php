@@ -25,10 +25,13 @@ return new class extends Migration
             $table->string('satuan');
             $table->string('perkembangan');
             $table->enum('lokasi', ['rak','shelf', 'box']);
-            $table->string('ket_lokasi');
+            $table->string('box_number');
             $table->integer('tahun_inactive');
             $table->integer('tahun_musnah');
             $table->string('status');
+            $table->string('klasifikasi_box');
+            $table->string('status_box');
+            $table->string('rak_number');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

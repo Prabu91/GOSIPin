@@ -22,10 +22,13 @@ class Classification extends Model
         'satuan',
         'perkembangan',
         'lokasi',
-        'ket_lokasi',
+        'box_number',
         'tahun_inactive',
         'tahun_musnah',
-        'status'
+        'status',
+        'klasifikasi_box',
+        'status_box',
+        'rak_number'
     ];
 
     protected $keyType = 'string';

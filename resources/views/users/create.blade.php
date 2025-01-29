@@ -31,7 +31,7 @@
             <label class="block">Role</label>
             <select name="role" class="w-full p-2 border rounded">
                 <option value="UK">UK</option>
-                <option value="Pegawai">Pegawai</option>
+                <option value="UP">UP</option>
             </select>
         </div>
 

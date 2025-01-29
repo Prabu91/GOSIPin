@@ -30,14 +30,14 @@
 					<th class="p-2 border">Jumlah</th>
 					<th class="p-2 border">Satuan</th>
 					<th class="p-2 border">Tingkat Pengembangan</th>
-					<th class="p-2 border">JRA Active</th>
-					<th class="p-2 border">JRA Inactive</th>
+					<th class="p-2 border">JRA Aktif</th>
+					<th class="p-2 border">JRA Inaktif</th>
 					<th class="p-2 border">Keterangan</th>
 					<th class="p-2 border">Lokasi</th>
 					<th class="p-2 border">Klasifikasi Keamanan</th> 
 					<th class="p-2 border">Hak Akses</th> 
-					<th class="p-2 border">Keterangan Lokasi</th>
-					<th class="p-2 border">Tahun Inactive</th>
+					<th class="p-2 border">Nomor Box</th>
+					<th class="p-2 border">Tahun Inaktif</th>
 					<th class="p-2 border">Tahun Pemusnahan</th>
 					<th class="p-2 border">Status</th>
 					<th class="p-2 border">Aksi</th>
@@ -64,17 +64,21 @@
 						<td class="p-2 border">{{ $classification->lokasi }}</td>
 						<td class="p-2 border">{{ $classification->classificationCode->security }}</td>
 						<td class="p-2 border">{{ $classification->classificationCode->hak_akses }}</td>
-						<td class="p-2 border">{{ $classification->ket_lokasi }}</td>
+						<td class="p-2 border">{{ $classification->box_number }}</td>
 						<td class="p-2 border">{{ $classification->tahun_inactive }}</td>
 						<td class="p-2 border">{{ $classification->tahun_musnah }}</td>
-						<td class="p-2 border">{{ $classification->status }}</td>
-						<td class="p-2 border">
-							<a href="{{ route('classification.edit', $classification->id) }}" class="inline-flex items-center justify-center bg-yellow-500 hover:bg-yellow-400 text-txtd px-2 py-1 rounded">Edit</a>
-							<button type="button" 
-                                    class="deleteButton inline-flex items-center justify-center bg-red-500 hover:bg-red-400 text-white px-3 py-1.5 rounded text-sm font-medium"
-                                    data-id="{{ $classification->id }}">
-                                Hapus
-                            </button>
+						<td class="p-2 border font-bold text-{{ $classification->status == 'Aktif' ? 'green-600' : 'red-600' }}">
+							{{ $classification->status }}
+						</td>
+						<td class="p-2 border text-center">
+							<div class="flex justify-center space-x-2">
+								<a href="{{ route('classification.edit', $classification->id) }}" class="inline-flex items-center justify-center bg-yellow-500 hover:bg-yellow-400 text-txtd px-2 py-1 rounded">Edit</a>
+								<button type="button" 
+										class="deleteButton inline-flex items-center justify-center bg-red-500 hover:bg-red-400 text-white px-3 py-1.5 rounded text-sm font-medium"
+										data-id="{{ $classification->id }}">
+									Hapus
+								</button>
+							</div>
 						</td>
 					</tr>
 				@endforeach

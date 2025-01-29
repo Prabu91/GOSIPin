@@ -31,7 +31,7 @@ class StoreClassificationRequest extends FormRequest
             'satuan' => 'required|string',
             'perkembangan' => 'required|string',
             'lokasi' => 'required|in:rak,shelf,box',
-            'ket_lokasi' => 'required|string',
+            'box_number' => 'required|string|unique:classification_tables,box_number',
         ];
     }
 
@@ -66,8 +66,9 @@ class StoreClassificationRequest extends FormRequest
             'lokasi.required' => 'Lokasi wajib dipilih.',
             'lokasi.in' => 'Lokasi harus berupa rak, shelf, atau box.',
 
-            'ket_lokasi.required' => 'Keterangan lokasi wajib diisi.',
-            'ket_lokasi.string' => 'Keterangan lokasi harus berupa teks.',
+            'box_number.required' => 'Nomor Box wajib diisi.',
+            'box_number.string' => 'Nomor Box harus berupa teks.',
+            'box_number.unique' => 'Nomor Box sudah ada.',
 
             'tahun_inactive.required' => 'Tahun inaktif wajib diisi.',
             'tahun_inactive.date' => 'Format tahun inaktif tidak valid.',

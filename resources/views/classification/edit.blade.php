@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Klasifikasi')
+@section('title', 'Edit Klasifikasi')
 
 @section('content')
     
 <div class="container mx-auto max-w-lg p-8 bg-white shadow-md rounded-lg">
-	<h1 class="text-2xl font-bold mb-4 text-txtl text-center">Tambah Data Klasifikasi</h1>
+	<h1 class="text-2xl font-bold mb-4 text-txtl text-center">Edit Data Klasifikasi</h1>
 
 	<form id="classificationForm" action="{{ route('classification.update', $classification->id) }}" method="POST">
 		@csrf
@@ -90,7 +90,7 @@
     <div id="confirmationModal" class="fixed inset-0 z-50 hidden bg-gray-800 bg-opacity-75 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <h3 class="text-lg font-semibold mb-4">Konfirmasi</h3>
-            <p>Apakah Anda yakin ingin menyimpan data user?</p>
+            <p>Apakah Anda yakin ingin menyimpan data?</p>
             <div class="flex justify-end mt-4">
                 <button id="cancelButton" class="mr-2 px-4 py-2 bg-gray-300 hover:bg-gray-200 text-gray-700 rounded-md">Batal</button>
                 <button id="confirmButton" class="px-4 py-2 bg-btn hover:bg-btnh text-white rounded-md">Ya, Simpan</button>

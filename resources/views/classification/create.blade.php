@@ -70,9 +70,9 @@
 			</select>
 		</div>
 		<div class="mb-4">
-			<label for="ket_lokasi" class="block">Keterangan Lokasi</label>
-			<input type="text" name="ket_lokasi" id="ket_lokasi" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('ket_lokasi') }}" >
-			<x-input-error :messages="$errors->get('ket_lokasi')" class="mt-2" />
+			<label for="box_number" class="block">Nomor Box</label>
+			<input type="text" name="box_number" id="box_number" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" value="{{ old('box_number') }}" >
+			<x-input-error :messages="$errors->get('box_number')" class="mt-2" />
 		</div>
 
 		<div class="flex justify-end items-center">
@@ -84,7 +84,7 @@
     <div id="confirmationModal" class="fixed inset-0 z-50 hidden bg-gray-800 bg-opacity-75 flex items-center justify-center">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <h3 class="text-lg font-semibold mb-4">Konfirmasi</h3>
-            <p>Apakah Anda yakin ingin menyimpan data user?</p>
+            <p>Apakah Anda yakin ingin menyimpan data?</p>
             <div class="flex justify-end mt-4">
                 <button id="cancelButton" class="mr-2 px-4 py-2 bg-gray-300 hover:bg-gray-200 text-gray-700 rounded-md">Batal</button>
                 <button id="confirmButton" class="px-4 py-2 bg-btn hover:bg-btnh text-white rounded-md">Ya, Simpan</button>

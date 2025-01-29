@@ -26,14 +26,27 @@ class ClassificationController extends Controller
 
     public function indexActive()
     {
-        $classifications = Classification::with('classificationCode','user')->where('status','active')->paginate(50);
+        $classifications = Classification::with('classificationCode','user')->where('status','aktif')->paginate(50);
         return view('classification.indexActive', compact('classifications'));
     }
 
     public function indexInactive()
     {
-        $classifications = Classification::with('classificationCode','user')->where('status','inactive')->paginate(50);
-        return view('classification.indexInactive', compact('classifications'));
+        $classifications = Classification::with('classificationCode','user')->where('status','inaktif')->paginate(50);
+        
+        // Hitung jumlah data berdasarkan klasifikasi_box
+        $classificationCounts = Classification::where('status', 'inaktif')
+        ->get()
+        ->groupBy('klasifikasi_box')
+        ->map(fn ($items) => $items->count());
+
+        // Hitung jumlah data berdasarkan status_box
+        $statusCounts = Classification::where('status', 'inaktif')
+            ->get()
+            ->groupBy('status_box')
+            ->map(fn ($items) => $items->count());
+
+        return view('classification.indexInactive', compact('classifications', 'classificationCounts', 'statusCounts'));
     }
 
     /**
@@ -57,8 +70,8 @@ class ClassificationController extends Controller
                 $jlmActive = ClassificationCode::where('id', $request->classification_code_id)->first();
                 $tahun_inactive = Carbon::parse($request->date)->year + $jlmActive->active;
                 $tahun_musnah = $tahun_inactive + $jlmActive->inactive;
-
-                $status = now()->year <= $tahun_musnah ? "Active" : "Inactive";
+                
+                $status = now()->year <= $tahun_musnah ? "Aktif" : "Inaktif";
 
                 $clas = Classification::create([
                     'user_id' => $user,
@@ -72,10 +85,13 @@ class ClassificationController extends Controller
                     'satuan' => $request->satuan,
                     'perkembangan' => $request->perkembangan,
                     'lokasi' => $request->lokasi,
-                    'ket_lokasi' => $request->ket_lokasi,
+                    'box_number' => $request->box_number,
                     'tahun_inactive' => $tahun_inactive,
                     'tahun_musnah' => $tahun_musnah,
                     'status' => $status,
+                    'klasifikasi_box' => 'Box Belum Dihapuskan',
+                    'status_box' => '-',
+                    'rak_number' => '-',
                 ]);
 
             });
@@ -119,7 +135,7 @@ class ClassificationController extends Controller
                 $tahun_inactive = Carbon::parse($request->date)->year + $jlmActive->active;
                 $tahun_musnah = $tahun_inactive + $jlmActive->inactive;
 
-                $status = now()->year <= $tahun_musnah ? "Active" : "Inactive";
+                $status = now()->year <= $tahun_musnah ? "Aktif" : "Inaktif";
 
                 $classification->update([
                     'user_id' => $user,
@@ -132,7 +148,7 @@ class ClassificationController extends Controller
                     'satuan' => $request->satuan,
                     'perkembangan' => $request->perkembangan,
                     'lokasi' => $request->lokasi,
-                    'ket_lokasi' => $request->ket_lokasi,
+                    'box_number' => $request->box_number,
                     'tahun_inactive' => $tahun_inactive,
                     'tahun_musnah' => $tahun_musnah,
                     'status' => $status,
@@ -145,7 +161,47 @@ class ClassificationController extends Controller
                 ->with('error', 'Gagal Memperbarui Data!');
         }
     }
+    
+    
+    public function editBox($id)
+    {
+        $classification = Classification::findOrFail($id);
 
+        return view('classification.classification-box', compact('classification'));
+    }
+    
+    public function updateBox(Request $request, $id) {
+        $request->validate([
+            'klasifikasi_box' => 'required',
+            'status_box' => [
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($request->klasifikasi_box == 'Box Belum Dihapuskan' && $value != '-') {
+                        $fail('Status Box harus default (-) jika Klasifikasi Box adalah "Box Belum Dihapuskan".');
+                    }
+    
+                    if (in_array($request->klasifikasi_box, ['Box Diajukan Penghapusan', 'Box Dihapuskan']) && $value == '-') {
+                        $fail('Status Box tidak boleh default (-) jika Klasifikasi Box adalah "Box Diajukan Penghapusan" atau "Box Dihapuskan".');
+                    }
+                }
+            ],
+        ]);
+    
+        try {
+            DB::transaction(function () use ($request, $id) {
+                $classification = Classification::findOrFail($id);
+    
+                $classification->update([
+                    'klasifikasi_box' => $request->klasifikasi_box,
+                    'status_box' => $request->status_box,
+                ]);
+            });
+    
+            return redirect()->route('classification.inactive')->with('success', 'Data berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->route('classification.inactive')->with('error', 'Gagal Memperbarui Data!');
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
