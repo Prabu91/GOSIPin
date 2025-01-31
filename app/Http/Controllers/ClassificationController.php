@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AktifExport;
 use App\Exports\InaktifExport;
 use App\Http\Requests\StoreClassificationRequest;
 use App\Http\Requests\UpdateClassificationRequest;
+use App\Imports\ClassificationImport;
 use App\Models\Classification;
 use App\Models\ClassificationCode;
 use App\Models\User;
@@ -42,7 +44,7 @@ class ClassificationController extends Controller
             });
         }
 
-        $classifications = $query->orderBy('box_number', 'asc')->paginate(10);
+        $classifications = $query->orderBy('mdate', 'asc')->paginate(10);
 
         return view('classification.index', compact('classifications'));
     }
@@ -297,4 +299,31 @@ class ClassificationController extends Controller
     {
         return Excel::download(new InaktifExport, 'data_inaktif.xlsx');
     }
+
+    public function exportAktif(Request $request)
+    {
+        return Excel::download(new AktifExport, 'data_aktif.xlsx');
+    }
+
+    public function importClassificationView(Request $request)
+    {
+        return view('classification.import');
+    }
+    public function importClassification(Request $request)
+    {
+        $request->validate([
+            'import_klasifikasi' => 'required|mimes:xlsx,xls',
+        ]);
+
+        try {
+            $import = new ClassificationImport();
+            Excel::import($import, request()->file('import_klasifikasi')); 
+            $import->import();
+            return redirect()->route('classification.index')->with('success', 'Data berhasil diimport.');
+        } catch (\Exception $e) {
+            return redirect()->route('classification.index')->with('error', 'Gagal mengimpor data: ' . $e->getMessage());
+        }
+    }
 }
+
+

@@ -5,8 +5,8 @@
 @section('content')
     
 <div class="container mx-auto max-w-lg p-8 bg-white shadow-md rounded-lg">
-	<h1 class="text-2xl font-bold mb-4 text-center text-txtl">Import Kode Klasifikasi</h1>
-    <form action="{{ route('classificationCode.import') }}" id="importForm" method="POST" enctype="multipart/form-data">
+	<h1 class="text-2xl font-bold mb-4 text-center text-txtl">Import Data Klasifikasi</h1>
+    <form action="{{ route('classification.importClassificationView') }}" id="importForm" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-4">
             <label for="file" class="block">Upload File Excel</label>

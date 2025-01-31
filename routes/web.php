@@ -47,11 +47,15 @@ Route::middleware('auth')->group(function () {
     Route::put('editRak/{id}', [LabelBoxController::class, 'updateRak'])->name('labelBox.updateRak');
 
     Route::get('export-data', [LabelBoxController::class, 'exportLabel'])->name('labelBox.exportData');
+    Route::get('export-aktif', [ClassificationController::class, 'exportAktif'])->name('classification.exportAktif');
     Route::get('export-inaktif', [ClassificationController::class, 'exportInaktif'])->name('classification.exportInaktif');
     Route::get('export-label/{id}', [LabelBoxController::class, 'exportPdf'])->name('labelBox.export');
 
     Route::get('import', [ClassificationCodeController::class, 'importView'])->name('classificationCode.importV');
-    Route::post('import', [ClassificationCodeController::class, 'import'])->name('classification.import');
+    Route::post('import', [ClassificationCodeController::class, 'import'])->name('classificationCode.import');
+
+    Route::get('import-classification', [ClassificationController::class, 'importClassificationView'])->name('classification.importClassificationView');
+    Route::post('import-classification', [ClassificationController::class, 'importClassification'])->name('classification.importClassification');
 
 
 });

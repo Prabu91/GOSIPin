@@ -3,14 +3,13 @@
 namespace App\Exports;
 
 use App\Models\Classification;
-use App\Models\ClassificationCode;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
-class InaktifExport implements FromCollection, WithHeadings, WithMapping
+class AktifExport implements FromCollection, WithHeadings, WithMapping
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -20,14 +19,11 @@ class InaktifExport implements FromCollection, WithHeadings, WithMapping
         $user = Auth::user();
 
         return Classification::with('user', 'classificationCode')
-            ->where('status', 'inaktif')
+            ->where('status', 'aktif')
             ->where('bagian', $user->department)
             ->get();
     }
 
-    /**
-     * Menentukan heading untuk kolom
-     */
     public function headings(): array
     {
         return [
@@ -60,14 +56,11 @@ class InaktifExport implements FromCollection, WithHeadings, WithMapping
         ];
     }
 
-    /**
-     * Mapping data sesuai kolom yang ingin ditampilkan
-     */
     public function map($classification): array
     {
         static $index = 1;
     
-        // Perhitungan tahun inaktif dan tahun pemusnahan
+        // Perhitungan tahun in aktif dan tahun pemusnahan
         $tahun_inaktif = Carbon::parse($classification->date)->year + $classification->classificationCode->active;
         $tahun_pemusnahan = $tahun_inaktif + $classification->classificationCode->inactive;
 

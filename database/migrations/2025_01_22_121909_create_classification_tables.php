@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->uuid('classification_code_id');
             $table->string('bagian');
-            $table->integer('nomor_berkas');
+            $table->string('nomor_berkas');
             $table->integer('nomor_item_berkas');
             $table->string('uraian_berkas');
             $table->date('date');
