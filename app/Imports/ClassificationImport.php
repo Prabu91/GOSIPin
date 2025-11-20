@@ -31,8 +31,7 @@ class ClassificationImport implements ToModel, WithHeadingRow, WithBatchInserts,
         $classificationCode = ClassificationCode::where('code', $row['code'])->first();
 
         $this->rows[] = [
-            'id' => Str::uuid(),
-            'user_id' => $user,
+            'user_id' => Auth::id(),
             'classification_code_id' => $classificationCode ? $classificationCode->id : null,
             'bagian' => $dept->department,
             'nomor_berkas' => $row['nomor_berkas'],

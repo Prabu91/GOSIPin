@@ -24,7 +24,6 @@ class ClassificationCodeImport implements ToModel
         $this->current++;
         if($this->current > 1 ){
             $this->rows[] = [
-                'id' => Str::uuid(),
                 'code' => $row['0'],
                 'title' => $row['1'],
                 'active' => $row['2'],

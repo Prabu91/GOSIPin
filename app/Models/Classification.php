@@ -31,20 +31,6 @@ class Classification extends Model
         'rak_number'
     ];
 
-    protected $keyType = 'string';
-    public $incrementing = false;
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
-            }
-        });
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
