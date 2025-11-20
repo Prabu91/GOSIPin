@@ -24,6 +24,7 @@ class LoginRequest extends FormRequest
         return [
                 'npp' => 'required|string',
                 'password' => 'required|string',
+                'captcha' => 'required|captcha',
         ];
     }
     public function messages(): array
@@ -31,6 +32,8 @@ class LoginRequest extends FormRequest
         return [
             'npp.required' => 'NPP wajib diisi.',
             'password.required' => 'password wajib diisi.',
+            'captcha.required' => 'CAPTCHA wajib diisi.',
+            'captcha.captcha' => 'Kode CAPTCHA tidak valid.',
         ];
     }
 }

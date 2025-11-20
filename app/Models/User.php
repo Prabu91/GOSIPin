@@ -38,6 +38,7 @@ class User extends Authenticatable
         'remember_token',
     ];
     
+    //uuid
     protected $keyType = 'string';
     public $incrementing = false;
 

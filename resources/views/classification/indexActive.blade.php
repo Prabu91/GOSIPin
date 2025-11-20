@@ -33,8 +33,11 @@
 					</button>
 				</div>
 			</form>
-			<a href="{{ route('classification.exportAktif') }}" class="bg-green-500 hover:bg-green-400 text-white px-2 py-1 rounded-lg">
+			<a href="{{ route('classification.exportAktif') }}" class="mx-2 bg-green-500 hover:bg-green-400 text-white px-2 py-1 rounded-lg">
 				Export to Excel
+			</a>
+			<a href="{{ route('classification.exportBaAktif') }}" class="bg-blue-500 hover:bg-blue-400 text-white px-2 py-1 rounded-lg">
+				Export BA
 			</a>
 		</div>
 	</div>

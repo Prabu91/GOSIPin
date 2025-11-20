@@ -10,6 +10,7 @@ use App\Imports\ClassificationImport;
 use App\Models\Classification;
 use App\Models\ClassificationCode;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +45,7 @@ class ClassificationController extends Controller
             });
         }
 
-        $classifications = $query->orderBy('mdate', 'asc')->paginate(10);
+        $classifications = $query->orderBy('date', 'asc')->paginate(10);
 
         return view('classification.index', compact('classifications'));
     }
@@ -97,39 +98,59 @@ class ClassificationController extends Controller
 
         // Filter berdasarkan klasifikasi_box
         if ($request->has('klasifikasi_box')) {
-            $klasifikasiBox = $request->input('klasifikasi_box');
-            $query->where('klasifikasi_box', $klasifikasiBox);
+            $query->where('klasifikasi_box', $request->input('klasifikasi_box'));
         }
 
         // Filter berdasarkan status_box
         if ($request->has('status_box')) {
-            $statusBox = $request->input('status_box');
-            $query->where('status_box', $statusBox);
+            $query->where('status_box', $request->input('status_box'));
         }
 
-        // Ambil data berdasarkan query yang telah difilter
-        $classifications = $query->orderBy('box_number', 'asc')->paginate(50);
+        if ($request->has('tahun')) {
+            $tahun = $request->input('tahun');
+            $query->whereRaw('YEAR(date) = ?', [$tahun]);
+        }        
 
-        // Hitung jumlah data berdasarkan klasifikasi_box dengan filter 'bagian'
+        // Ambil data berdasarkan query yang telah difilter
+        $classifications = $query
+            ->orderByRaw('status_box IS NOT NULL') // NULL duluan
+            ->orderBy('box_number', 'desc')         // baru urutkan box_number
+            ->paginate(50);
+
+        // Query untuk menghitung jumlah berdasarkan klasifikasi_box yang ikut terfilter tahun
         $classificationCounts = Classification::where('status', 'inaktif')
             ->when($user->role === 'UP', function ($q) use ($user) {
-                return $q->where('bagian', $user->department); 
+                return $q->where('bagian', $user->department);
+            })
+            ->when($request->has('tahun'), function ($q) use ($request) {
+                return $q->where('tahun_inactive', $request->input('tahun'));
             })
             ->get()
             ->groupBy('klasifikasi_box')
             ->map(fn ($items) => $items->count());
 
-        // Hitung jumlah data berdasarkan status_box dengan filter 'bagian'
+        // Query untuk menghitung jumlah berdasarkan status_box yang ikut terfilter tahun
         $statusCounts = Classification::where('status', 'inaktif')
             ->when($user->role === 'UP', function ($q) use ($user) {
-                return $q->where('bagian', $user->department); 
+                return $q->where('bagian', $user->department);
+            })
+            ->when($request->has('tahun'), function ($q) use ($request) {
+                return $q->where('date', $request->input('tahun'));
             })
             ->get()
             ->groupBy('status_box')
             ->map(fn ($items) => $items->count());
 
-        return view('classification.indexInactive', compact('classifications', 'classificationCounts', 'statusCounts'));
+        // Ambil tahun unik dari kolom 'date'
+        $years = Classification::whereNotNull('date')
+            ->selectRaw('YEAR(date) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        return view('classification.indexInactive', compact('classifications', 'classificationCounts', 'statusCounts', 'years'));
     }
+
 
 
     /**
@@ -295,10 +316,42 @@ class ClassificationController extends Controller
         return redirect()->route('classification.index')->with('success', 'Data berhasil dihapus.');
     }
 
+    public function bulkUpdateBox(Request $request)
+    {
+        dd($request);
+        
+        $ids = explode(',', $request->ids);
+        
+        Classification::whereIn('id', $ids)->update([
+            'klasifikasi_box' => $request->klasifikasi_box,
+            'status_box' => $request->status_box,
+        ]);
+
+        return redirect()->back()->with('success', 'Data berhasil diperbarui.');
+    }
+
+
     public function exportInaktif(Request $request)
     {
         return Excel::download(new InaktifExport, 'data_inaktif.xlsx');
     }
+
+    public function exportBaInaktif(Request $request)
+    {
+        $pdf = Pdf::loadView('classification.ba.ba-pkp')->setPaper('A4', 'portrait');
+        return $pdf->stream('berita_acara_pemindahan_arsip_inaktif.pdf');
+        // return $pdf->download('berita_acara_pemindahan_arsip.pdf');
+    }
+    public function exportBaAktif(Request $request)
+    {
+        $pdf = Pdf::loadView('classification.ba.ba-pkp-in')->setPaper('A4', 'portrait');
+        return $pdf->stream('berita_acara_pemindahan_arsip_aktif.pdf');
+        // return $pdf->download('berita_acara_pemindahan_arsip.pdf');
+    }
+    // public function exportBaInaktif(Request $request)
+    // {
+    //     return view('classification.ba.ba-pkp');
+    // }
 
     public function exportAktif(Request $request)
     {

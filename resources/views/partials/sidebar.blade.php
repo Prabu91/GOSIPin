@@ -4,13 +4,13 @@
 	<svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 	<path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
 	</svg>
- </button>
- 
+</button>
+
 <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
 <div class="h-full px-3 py-2 overflow-y-auto bg-sidebar items-center">
 	<div class="items-center space-x-4">
 		<a href="{{ route('dashboard') }}">
-			<img src="{{ asset('images/logo-light.png') }}" width="180" class="mx-auto my-4" />
+			<img src="{{ asset('images/arlogo-light.png') }}" width="180" class="mx-auto my-4" />
 		</a>
 	</div>
 	<div class="font-bold text-center text-txtd space-x-4">
@@ -73,12 +73,14 @@
 				<span class="flex-1 ms-3 whitespace-nowrap">Inactive</span>
 			</a>
 		</li>
-		<li>
-			<a href="{{ route('labelBox.index') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group {{ Request::routeIs('labelBox.index')  || Request::routeIs('labelBox.*') ? 'bg-gray-700  text-txtd' : '' }}">
-				<svg class="flex-shrink-0 w-5 h-5 text-txtl transition duration-75 dark:text-txtd group-hover:text-gray-900 dark:group-hover:text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" />  <line x1="12" y1="12" x2="20" y2="7.5" />  <line x1="12" y1="12" x2="12" y2="21" />  <line x1="12" y1="12" x2="4" y2="7.5" />  <line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
-				<span class="flex-1 ms-3 whitespace-nowrap">Label Box</span>
-			</a>
-		</li>
+		@if (auth()->user()->role == 'UK')
+			<li>
+				<a href="{{ route('labelBox.index') }}" class="flex p-2 text-txtl rounded-lg dark:text-txtd hover:bg-gray-100 dark:hover:bg-gray-700 group {{ Request::routeIs('labelBox.index')  || Request::routeIs('labelBox.*') ? 'bg-gray-700  text-txtd' : '' }}">
+					<svg class="flex-shrink-0 w-5 h-5 text-txtl transition duration-75 dark:text-txtd group-hover:text-gray-900 dark:group-hover:text-white"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <polyline points="12 3 20 7.5 20 16.5 12 21 4 16.5 4 7.5 12 3" />  <line x1="12" y1="12" x2="20" y2="7.5" />  <line x1="12" y1="12" x2="12" y2="21" />  <line x1="12" y1="12" x2="4" y2="7.5" />  <line x1="16" y1="5.25" x2="8" y2="9.75" /></svg>
+					<span class="flex-1 ms-3 whitespace-nowrap">Label Box</span>
+				</a>
+			</li>
+		@endif
 	</ul>
 	<ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
 		<li>

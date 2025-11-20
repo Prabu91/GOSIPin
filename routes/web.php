@@ -49,6 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::get('export-data', [LabelBoxController::class, 'exportLabel'])->name('labelBox.exportData');
     Route::get('export-aktif', [ClassificationController::class, 'exportAktif'])->name('classification.exportAktif');
     Route::get('export-inaktif', [ClassificationController::class, 'exportInaktif'])->name('classification.exportInaktif');
+    Route::get('export-ba-inaktif', [ClassificationController::class, 'exportBaInaktif'])->name('classification.exportBaInaktif');
+    Route::get('export-ba-aktif', [ClassificationController::class, 'exportBaAktif'])->name('classification.exportBaAktif');
     Route::get('export-label/{id}', [LabelBoxController::class, 'exportPdf'])->name('labelBox.export');
 
     Route::get('import', [ClassificationCodeController::class, 'importView'])->name('classificationCode.importV');
@@ -56,6 +58,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('import-classification', [ClassificationController::class, 'importClassificationView'])->name('classification.importClassificationView');
     Route::post('import-classification', [ClassificationController::class, 'importClassification'])->name('classification.importClassification');
+
+    Route::put('/classification/bulk-update', [ClassificationController::class, 'bulkUpdateBox'])->name('classification.bulkUpdateBox');
 
 
 });
